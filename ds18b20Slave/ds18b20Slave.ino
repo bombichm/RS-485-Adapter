@@ -1,6 +1,7 @@
 #include <SoftwareSerial.h>
 #include "RS485_protocol.h"
 #include <OneWire.h> 
+#include <avr/wdt.h>
 
 SoftwareSerial rs485 (2, 3);  // receive pin, transmit pin
 const byte myAddress = 1;     //unique number to each device
@@ -14,6 +15,7 @@ OneWire TemperatureSensor(ONEWIRE_BUS);  // Dallas one wire data bus pin, a 4.7K
 
 void setup()
 {
+  wdt_enable(WDTO_8S);                                            //8 second watchdog timer
   rs485.begin (28800);
   pinMode (ENABLE_PIN, OUTPUT);  // driver output enable
   blink();
@@ -23,6 +25,7 @@ void setup()
 
 void loop()
 {
+  wdt_reset();
   int temp = getTemperature();
   byte buf [10];
   

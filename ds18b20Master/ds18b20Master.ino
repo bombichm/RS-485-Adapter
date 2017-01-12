@@ -1,6 +1,6 @@
-
 #include "RS485_protocol.h"
 #include <SoftwareSerial.h>
+#include <avr/wdt.h>
 
 SoftwareSerial rs485 (2, 3);  // receive pin, transmit pin
 
@@ -19,6 +19,7 @@ const byte boilerRoom = tempArray[5];
 
 void setup()
 {
+  wdt_enable(WDTO_8S);                                            //8 second watchdog timer
   rs485.begin (28800);
   pinMode (ENABLE_PIN, OUTPUT);  // driver output enable
   pinMode (LED_PIN, OUTPUT);  // built-in LED
@@ -27,6 +28,7 @@ void setup()
 
 void loop()
 {
+  wdt_reset();
   for (int address = 0; address < 7; address++)
   {
     int reading = getTemperatures(address);
